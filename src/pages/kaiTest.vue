@@ -78,12 +78,6 @@ export default {
         link.click();
       },
       error: function (data) {
-        console.log('ajax请求错误', data)
-        if (window.location.href.indexOf('FileLinkList') >= 0) {
-          // j
-        } else {
-          router.push('/Login')
-        }
       }
       })
     //   axios({
