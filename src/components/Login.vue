@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import router, {asyncRouterMap} from '../router'
 export default {
   data() {
     return {
@@ -80,6 +81,18 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(valid => {
         if (!valid) return;
+        console.log(valid)
+        this.ajax('/login/doLogin',{name: this.userName, password: this.userPwd}).then(res => {
+        this.log('login:', res)
+        if (res.code === 200) {
+          sessionStorage.setItem('voteToken', res.data.token)
+          sessionStorage.setItem('voteUserName', res.data.obj.userName)
+          this.$router.push('/firstPage')
+        } else {
+          this.$message.error('异常：' + res.msg)
+        }
+      })
+       router.addRoutes(asyncRouterMap)
         this.$router.push("/home");
       });
     }

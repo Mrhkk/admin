@@ -6,7 +6,7 @@
         <div>电商后台管理系统</div>
         <el-button type="info" @click="edit">退出</el-button>
       </el-header>
-      <el-container>
+      <el-container style="height: 80vh" class="test-1">
         <el-aside :width="isCollapse?'64px':'200px'">
           <div class="toggle_button" @click="toggleCollapse">|||</div>
           <el-menu
@@ -111,13 +111,13 @@ export default {
               limit: true,
               id: '5'
             },
-            {
-              icon: 'el-icon-download',
-              index: 'BillRecord',
-              title: '账单记录',
-              limit: true,
-              id: '5'
-            }
+            // {
+            //   icon: 'el-icon-download',
+            //   index: 'BillRecord',
+            //   title: '账单记录',
+            //   limit: true,
+            //   id: '5'
+            // }
           ]
         },
         {
@@ -175,6 +175,27 @@ export default {
           title: '售后仓库管理',
           limit: true,
           id: '16'
+        },
+        {
+          icon: 'el-icon-receiving',
+          index: 'kaiTest',
+          title: '测试图片',
+          limit: true,
+          id: '17'
+        },
+        {
+          icon: 'el-icon-receiving',
+          index: 'moreTable',
+          title: '多级表格嵌套',
+          limit: true,
+          id: '17'
+        },
+         {
+          icon: 'el-icon-receiving',
+          index: 'moreTable1',
+          title: '多级表格嵌套1',
+          limit: true,
+          id: '18'
         }
       ],
       isCollapse: false
@@ -214,6 +235,23 @@ export default {
 </script>
 <style scoped>
 /* @import url(); 引入css类 */
+::-webkit-scrollbar {
+/*滚动条整体样式*/
+width : 10px;  /*高宽分别对应横竖滚动条的尺寸*/
+height: 1px;
+}
+::-webkit-scrollbar-thumb {
+/*滚动条里面小方块*/
+border-radius: 10px;
+box-shadow   : inset 0 0 5px rgba(0, 0, 0, 0.2);
+background   : #535353;
+}
+::-webkit-scrollbar-track {
+/*滚动条里面轨道*/
+box-shadow   : inset 0 0 5px rgba(0, 0, 0, 0.2);
+border-radius: 10px;
+background   : #ededed;
+}
 .home {
   width: 100%;
   height: 100%;

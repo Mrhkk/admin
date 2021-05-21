@@ -43,29 +43,52 @@
       <el-table-column label="商品名称" prop="name"></el-table-column>
       <el-table-column label="描述" prop="desc"></el-table-column>
     </el-table>
+    <div class="filter-container">
+      <el-checkbox-group v-model="checkboxVal">
+        <el-checkbox label="sort">
+          order
+        </el-checkbox>
+        <el-checkbox label="status">
+          status
+        </el-checkbox>
+        <el-checkbox label="">
+          富豪
+        </el-checkbox>
+      </el-checkbox-group>
+    </div>
     <el-table
       ref="dragTable"
+      :key="key"
       :data="list"
       row-key="sort"
       border
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="order" width="65">
-        <template slot-scope="{ row }">
-          <span>{{ row.sort }}</span>
-        </template>
+      <el-table-column v-for="(item, index) in col"
+                       :key="`col_${index}`"
+                       :prop="dropCol[index].prop"
+                       :formatter="item.fun"
+                       :label="item.label">
       </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110">
-        <template slot-scope="{ row }">
-          {{ row.status }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="Drag" width="80">
-        <template slot-scope="{}">
-          <span class="drag-handler"><i class="el-icon-rank font"></i></span>
-        </template>
-      </el-table-column>
+      <!-- <el-table-column
+            prop="sort"
+            label="排序"
+            width="100"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            width="100"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop=""
+            label="操作"
+            width="100"
+            align="center"
+          ></el-table-column> -->
     </el-table>
     <el-dialog
       title="测试拖拽"
@@ -76,6 +99,15 @@
     >
       <span>这是一段信息</span>
     </el-dialog>
+    <div class="show-d">
+      <el-tag>The default order :</el-tag> {{ oldList }}
+    </div>
+    <div class="show-d">
+      <el-tag>The after dragging order :</el-tag> {{ newList }}
+    </div>
+    <div class="show-d">
+      <el-tag>The col dragging col :</el-tag><span v-for="(v,i) in dropCol" style="margin: 0 10px">{{v.label}}</span>
+    </div>
   </div>
 </template>
 
@@ -88,6 +120,12 @@ export default {
   directives: { elDragDialog },
   data() {
     return {
+      formTheadOptions: ['sort', 'status', ''],
+      key: 1, // table key
+      checkboxVal: ['sort', 'status'], // checkboxVal
+      formThead: ['sort','status'], // 默认表头 Default header
+      oldList: [],
+      newList: [],
       tableData: [
         {
           id: "12987122",
@@ -153,6 +191,35 @@ export default {
           status: "ad"
         }
       ],
+      col: [
+        {
+          label: 'order',
+          prop: 'sort',
+          fun: (a, b, cellValue) => { return (cellValue === 1 ? '已确认' : '待确认') },
+        },
+        {
+          label: 'status',
+          prop: 'status'
+        },
+        {
+          label: '富豪',
+          prop: ''
+        }
+      ],
+      dropCol: [
+        {
+          label: 'order',
+          prop: 'sort'
+        },
+        {
+          label: 'status',
+          prop: 'status'
+        },
+        {
+          label: '富豪',
+          prop: ''
+        }
+      ],
       radio: "",
       arr1: [
         { id: "1", name: 'a' },
@@ -163,12 +230,14 @@ export default {
   },
   //生命周期 - 创建完成（访问当前this实例）
   created() {
-    this.$nextTick(() => {
-      this.setSort();
-    });
   },
   //生命周期 - 挂载完成（访问DOM元素）
-  mounted() {},
+  mounted() {
+    this.oldList = this.list.map(v => v.sort)
+    this.newList = this.oldList.slice()
+      this.setSort();
+    this.columnDrop()
+  },
   methods: {
     rowClick(row, c, e) {
       if (row.id === "12987122") {
@@ -193,9 +262,32 @@ export default {
         onEnd: evt => {
           const targetRow = this.list.splice(evt.oldIndex, 1)[0];
           this.list.splice(evt.newIndex, 0, targetRow);
+          // for show the changes, you can delete in you code
+          const tempIndex = this.newList.splice(evt.oldIndex, 1)[0]
+          this.newList.splice(evt.newIndex, 0, tempIndex)
         }
       });
+    },
+  //  列拖拽
+    //列拖拽
+    columnDrop() {
+      const wrapperTr = this.$refs.dragTable.$el.querySelectorAll('.el-table__header-wrapper tr')[0]
+      this.sortable = Sortable.create(wrapperTr, {
+        animation: 180,
+        delay: 0,
+        onEnd: evt => {
+          const oldItem = this.dropCol[evt.oldIndex]
+          this.dropCol.splice(evt.oldIndex, 1)
+          this.dropCol.splice(evt.newIndex, 0, oldItem)
+        }
+      })
     }
+  },
+  watch: {
+    // checkboxVal(valArr) {
+    //   this.col = this.formTheadOptions.filter(i => valArr.indexOf(i) >= 0)
+    //   this.key = this.key + 1// 为了保证table 每次都会重渲 In order to ensure the table will be re-rendered each time
+    // }
   }
 };
 </script>
@@ -236,5 +328,8 @@ thead > tr {
 .font {
   font-size: 28px;
   font-weight: 800;
+}
+.show-d{
+  margin-top: 15px;
 }
 </style>
