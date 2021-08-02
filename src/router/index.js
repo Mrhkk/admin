@@ -81,6 +81,20 @@ export const asyncRouterMap = [
                 meta: {
                     title: '多级表格嵌套1'
                 },
+            },
+            {
+                path: '/Notice',
+                component: resolve => require(['../pages/Notice.vue'], resolve),
+                meta: {
+                    title: '测试日历'
+                },
+            },
+            {
+                path: '/WorkFlow',
+                component: resolve => require(['../pages/upload.vue'], resolve),
+                meta: {
+                    title: '文件上传'
+                },
             }
             //    , {
             //     path: '/addGoods',

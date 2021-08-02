@@ -48,10 +48,13 @@
 </template>
 
 <script>
-import router, {asyncRouterMap} from '../router'
+import router, { asyncRouterMap } from "../router";
+import { gen, random } from "@/utils/util";
 export default {
   data() {
     return {
+      add: null,
+      gen: null,
       showLogin: false,
       loginForm: {
         username: "",
@@ -76,23 +79,54 @@ export default {
       return distance;
     },
     resetLoginForm() {
-      this.$refs.loginFormRef.resetFields();
+      // var g = gen(1);
+      // g.next();
+      // console.log(g)
+      // g.throw("出错了");
+      // setTimeout(() => {
+      //   console.log(1);
+      // }, 500);
+      // setTimeout(() => {
+      //   console.log(2);
+      // }, 100);
+      // this.$refs.loginFormRef.resetFields();
+      // this.gen = this.kai()
+      // this.gen.next()
+      this.add = this.add2()
+      console.log(this.add.next(10))
+    },
+    * kai() {
+      yield setTimeout(() => {console.log(1); this.gen.next()}, 500);
+      setTimeout(() => {
+        console.log(2);
+      }, 100);
+    },
+    * add2 () {
+       console.log('start')
+       let x = yield '2'
+       console.log('one' + x)
+       let y = yield '3'
+       console.log('two' + y)
+       return x + y
     },
     login() {
       this.$refs.loginFormRef.validate(valid => {
         if (!valid) return;
-        console.log(valid)
-        this.ajax('/login/doLogin',{name: this.userName, password: this.userPwd}).then(res => {
-        this.log('login:', res)
-        if (res.code === 200) {
-          sessionStorage.setItem('voteToken', res.data.token)
-          sessionStorage.setItem('voteUserName', res.data.obj.userName)
-          this.$router.push('/firstPage')
-        } else {
-          this.$message.error('异常：' + res.msg)
-        }
-      })
-       router.addRoutes(asyncRouterMap)
+        console.log(valid);
+        this.ajax("/login/doLogin", {
+          name: this.userName,
+          password: this.userPwd
+        }).then(res => {
+          this.log("login:", res);
+          if (res.code === 200) {
+            sessionStorage.setItem("voteToken", res.data.token);
+            sessionStorage.setItem("voteUserName", res.data.obj.userName);
+            this.$router.push("/firstPage");
+          } else {
+            this.$message.error("异常：" + res.msg);
+          }
+        });
+        router.addRoutes(asyncRouterMap);
         this.$router.push("/home");
       });
     }

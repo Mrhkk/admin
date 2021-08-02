@@ -7,7 +7,8 @@ import App from './App'
 // import router from './router'
 import router, {asyncRouterMap} from './router'
 import store from './store/index'
-import ajax from '../static/js/ajax.js'
+// import ajax from '../static/js/ajax.js'
+import ajax from '../static/js/extend.js'
 
 import Vuex from 'vuex'
 

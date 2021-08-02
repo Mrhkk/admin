@@ -4,6 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const webpack = require('webpack')  //这里引入webpack
+const FileManagerPlugin = require('filemanager-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -86,6 +87,17 @@ module.exports = {
   },
   //在最后添加一个plugins配置
   plugins: [
+    new FileManagerPlugin({  //初始化 filemanager-webpack-plugin 插件实例
+      onEnd: {
+        mkdir: ['./foeer'],
+           delete: [   //首先需要删除项目根目录下的dist.zip
+               './foeer/projectName.zip',
+           ],
+           archive: [ //然后我们选择dist文件夹将之打包成dist.zip并放在根目录
+               {source: './dist', destination: './foeer/projectName.zip'},   
+           ]
+       }
+    }),
     new webpack.ProvidePlugin({
         $: "jquery",
         jQuery: "jquery"

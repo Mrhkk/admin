@@ -17,18 +17,36 @@
       >
     </el-radio-group>
     <div class="box">
-  <div id="preview" v-on:paste="handlePaste">
-      <span>将图片按Ctrl+V 粘贴至此处</span>
-  </div>
-  <el-button
-        v-on:click="uploadPlans"
-      >上传文件</el-button>
-</div>  
+      <div id="preview" v-on:paste="handlePaste">
+        <span>将图片按Ctrl+V 粘贴至此处</span>
+      </div>
+      <el-button v-on:click="uploadPlans">上传文件</el-button>
+    </div>
+    <div>
+      <template>
+        <el-select
+          collapse-tags
+          multiple
+          v-model="value"
+          filterable
+          placeholder="请选择"
+          @change="selectAll"
+          clearable
+        >
+          <el-option
+            v-for="item in cities"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
-import fileUpload from '../components/fileList/FileUpload'
+import fileUpload from "../components/fileList/FileUpload";
 export default {
   components: {
     fileUpload
@@ -38,11 +56,41 @@ export default {
       flag: false,
       radio2: "",
       available: true,
-      comment: ''
+      comment: "",
+      cities: [
+        {
+          value: "选项1",
+          label: "黄金糕"
+        },
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
+      value: [],
+      oldOptions: []
     };
   },
   //生命周期 - 创建完成（访问当前this实例）
-  created() {},
+  created() {
+    const allSelect = {
+      value: "allSelect",
+      label: "全选"
+    };
+    this.cities.unshift(allSelect);
+  },
   watch: {
     radio2(val) {
       console.log(val);
@@ -51,6 +99,38 @@ export default {
   //生命周期 - 挂载完成（访问DOM元素）
   mounted() {},
   methods: {
+    selectAll(valArr) {
+      const allIdArr = [];
+      // 保存所有选项的id
+      for (const argumentId of this.cities) {
+        allIdArr.push(argumentId.value);
+      }
+      const oldVal = this.oldOptions.length === 1 ? this.oldOptions[0] : [];
+      // 当前选中的有'全选'
+      if (valArr.includes("allSelect")) {
+        this.value = allIdArr;
+      }
+      // 旧数据包含'全选'，当前选中数据不包含全选
+      if (oldVal.includes("allSelect") && !valArr.includes("allSelect")) {
+        this.value = [];
+      }
+      // 旧数据包含'全选'，当前选中数据包含全选
+      if (oldVal.includes("allSelect") && valArr.includes("allSelect")) {
+        const index = valArr.indexOf("allSelect");
+        valArr.splice(index, 1); // 排除全选选项
+        this.value = valArr;
+      }
+      // 旧数据不包含'全选'，当前选中数据不包含'全选'
+      if (!oldVal.includes("allSelect") && !valArr.includes("allSelect")) {
+        console.log(11);
+        // 除了全选外 其他全部选中时
+        if (valArr.length === allIdArr.length - 1) {
+          this.value = ["allSelect"].concat(valArr);
+        }
+      }
+      // 数据发生变化时保存数据，作为下次对比的旧数据
+      this.oldOptions[0] = this.value;
+    },
     // 监听粘贴操作
     handlePaste(event) {
       const items = (event.clipboardData || window.clipboardData).items;
@@ -81,7 +161,7 @@ export default {
       this.file = file;
     },
     //上传文件成功后回调
-     uploadPlans() {
+    uploadPlans() {
       let file = this.file;
       if (!file) {
         this.$message.error("请粘贴图片后上传");
@@ -91,7 +171,7 @@ export default {
       let form = new FormData();
       form.append("file", file);
       form.append("type", this.type);
-    //uploadCertificate是封装的axios请求，自己根据需求传参
+      //uploadCertificate是封装的axios请求，自己根据需求传参
       uploadCertificate(form)
         .then(data => {
           if (data.data && data.data.success) {
@@ -100,7 +180,8 @@ export default {
           } else {
             this.$message.error(this.name + "上传失败！");
           }
-        }).catch(() => {});
+        })
+        .catch(() => {});
     },
     clickitem(e) {
       e === this.radio2 ? (this.radio2 = "") : (this.radio2 = e);
