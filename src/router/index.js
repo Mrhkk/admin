@@ -4,6 +4,8 @@ import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
 import HomePage from '../pages/HomePage.vue'
 import fileList from '../pages/FileList.vue'
+import srm from '../pages/testTable.vue'
+import srm1 from '../pages/srmT1.vue'
 import table from '../pages/table.vue'
 import workRecord from '../pages/workRecord.vue'
 // 修复路由点击同一个报错
@@ -43,7 +45,22 @@ export const asyncRouterMap = [
                 meta: {
                     title: '首页'
                 }
-            }, {
+            },
+            {
+                path: '/srm',
+                component: srm,
+                meta: {
+                    title: '测试用力'
+                },
+            },
+            {
+                path: '/srm1',
+                component: srm1,
+                meta: {
+                    title: '测试用力1'
+                },
+            },
+             {
                 path: '/fileList',
                 component: fileList,
                 meta: {
@@ -93,7 +110,35 @@ export const asyncRouterMap = [
                 path: '/WorkFlow',
                 component: resolve => require(['../pages/upload.vue'], resolve),
                 meta: {
-                    title: '文件上传'
+                    title: '文件上传ClaimsExport'
+                },
+            },
+            {
+                path: '/ClaimsExport',
+                component: resolve => require(['../pages/ClaimsExport.vue'], resolve),
+                meta: {
+                    title: '自定义表格'
+                },
+            },
+            {
+                path: '/echarts',
+                component: resolve => require(['../pages/echarts.vue'], resolve),
+                meta: {
+                    title: '测试图表'
+                },
+            },
+            {
+                path: '/KnowledgeAdmin',
+                component: resolve => require(['../pages/KnowledgeAdmin.vue'], resolve),
+                meta: {
+                    title: '测试图表'
+                },
+            },
+            {
+                path: '/highcharts',
+                component: resolve => require(['../pages/highcharts.vue'], resolve),
+                meta: {
+                    title: '测试high图表'
                 },
             }
             //    , {

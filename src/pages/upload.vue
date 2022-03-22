@@ -16,6 +16,35 @@
       :on-remove="handleRemove"
     >
       <i slot="default" class="el-icon-plus avatar-uploader-icon"></i>
+       <div slot="file" slot-scope="{ file }">
+            <el-image
+              class="el-upload-list__item"
+              :src="file.show_url || 'http://baho-file.oss-cn-hangzhou.aliyuncs.com/baho/hekk/2021-07/2021-07-29/20210812182209280.gif?Expires=1944123729&OSSAccessKeyId=LTAI4FyW52rsc8qoQKmccwEH&Signature=vMy7%2F2wXjlNkYqNSPAE1XJEQdFY%3D'"
+              alt=""
+            />
+            <span class="el-upload-list__item-actions">
+              <span
+                v-if="file.isImg === false"
+                class="el-upload-list__item-delete"
+                @click="handleDownload(file)"
+              >
+                <i class="el-icon-download"></i>
+              </span>
+              <span
+                v-else
+                class="el-upload-list__item-preview"
+                @click="handlePictureCardPreview(file)"
+              >
+                <i class="el-icon-zoom-in"></i>
+              </span>
+              <span
+                class="el-upload-list__item-delete"
+                @click="handleRemove(file, inx)"
+              >
+                <i class="el-icon-delete"></i>
+              </span>
+            </span>
+          </div>
     </el-upload>
     <el-dialog append-to-body :visible.sync="dialogVisible">
       <el-image width="100%" :src="dialogImageUrl" alt="" :preview-src-list="[dialogImageUrl]"/>
@@ -50,7 +79,8 @@ export default {
         this.handleDownload(file);
         return;
       }
-      this.dialogImageUrl = file.url;
+      console.log(file, file.originalImage)
+      this.dialogImageUrl = file.response.data.originalImage;
       this.dialogVisible = true;
     },
     uploadSuccess(response, file, fileList) {
@@ -69,6 +99,7 @@ export default {
           file.url =
             "http://baho-file.oss-cn-hangzhou.aliyuncs.com/baho/hekk/2021-07/2021-07-29/20210730145411117.png?Expires=1942988051&OSSAccessKeyId=LTAI4FyW52rsc8qoQKmccwEH&Signature=QgkReX%2FtjKXmXU9gwXR%2FA4xMf64%3D";
         }
+        file.show_url = response.data.previewUrl
       }
       fileList.map(item => {
         if (

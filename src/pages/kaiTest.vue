@@ -10,6 +10,7 @@
     {{ addCount }}
     <slider :min="0" :max="100" v-model="per" />
     <el-button type="primary" @click="exportExcel">学而思</el-button>
+    <el-button type="primary" @click="throttle">防抖</el-button>
   </div>
 </template>
 
@@ -22,26 +23,27 @@ import axios from "axios";
 import ajax from "../../static/js/extend";
 export default {
   components: {
-    slider
+    slider,
   },
   data() {
     return {
+      statu: true,
       per: 0,
       imgSrc,
       imgSrc1,
       timer: null,
       changeSize: false,
-      count: 1
+      count: 1,
     };
   },
   computed: {
     ...mapGetters([
       //此处的 count 与以下 store.js 文件中 getters 内的 count 相对应
-      "getToDo"
+      "getToDo",
     ]),
     addCount() {
       return this.count + 2;
-    }
+    },
   },
   // 生命周期 - 创建完成（访问当前this实例）
   created() {},
@@ -53,13 +55,28 @@ export default {
     }, 600);
   },
   methods: {
+    // 节流函数
+    fn() {
+      console.log("防抖函数执行！");
+    },
+    //节流函数
+    throttle() {
+      //保持this的指向始终指向vue实例
+      var that = this;
+      if (!that.statu) {
+        return;
+      }
+      that.statu = false;
+      setTimeout(function () {
+        console.log(new Date());
+        that.fn();
+        that.statu = true;
+      }, 5000);
+    },
     exportExcel() {
       var ajax = new XMLHttpRequest();
       //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
-      ajax.open(
-        "get",
-        "/api/test/?startTime=2019-05-01&endTime=2019-05-07"
-      );
+      ajax.open("get", "/api/test/?startTime=2019-05-01&endTime=2019-05-07");
       ajax.responseType = "blob";
       // ajax.setRequestHeader(
       //   "Authorization",
@@ -68,7 +85,7 @@ export default {
       //步骤三:发送请求
       ajax.send();
       //步骤四:注册事件 onreadystatechange 状态改变就会调用
-      ajax.onreadystatechange = function() {
+      ajax.onreadystatechange = function () {
         if (ajax.readyState == 4 && ajax.status == 200) {
           //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
           console.log(ajax); //输入相应的内容
@@ -77,8 +94,7 @@ export default {
               [ajax.response],
               // 设置该文件的mime类型，这里对应的mime类型对应为.xlsx格式
               {
-                type:
-                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
               }
             )
           );
@@ -156,13 +172,13 @@ export default {
     },
     addC() {
       this.count += 1;
-    }
+    },
   },
   beforeDestroy() {
     if (this.timer) {
       clearInterval(this.timer);
     }
-  }
+  },
 };
 </script>
 <style scoped>

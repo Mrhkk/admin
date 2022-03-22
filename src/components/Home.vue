@@ -71,10 +71,31 @@ export default {
       arr: [
         {
           icon: 'el-icon-s-custom',
+          index: 'highcharts',
+          title: '测试图表',
+          limit: true,
+          id: '1'
+        },
+        {
+          icon: 'el-icon-s-custom',
           index: 'home',
           title: '客户服务',
           limit: true,
           id: '1'
+        },
+        {
+          icon: 'el-icon-upload',
+          index: 'srm',
+          title: '测试用力',
+          limit: true,
+          id: '2'
+        },
+        {
+          icon: 'el-icon-upload',
+          index: 'srm1',
+          title: '测试用力1',
+          limit: true,
+          id: '2'
         },
         {
           icon: 'el-icon-upload',
@@ -194,6 +215,13 @@ export default {
           icon: 'el-icon-receiving',
           index: 'moreTable1',
           title: '多级表格嵌套1',
+          limit: true,
+          id: '18'
+        },
+         {
+          icon: 'el-icon-receiving',
+          index: 'echarts',
+          title: '测试图表',
           limit: true,
           id: '18'
         }

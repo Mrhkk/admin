@@ -73,6 +73,18 @@ export default {
     };
   },
   methods: {
+    params() {
+      return new Promise((reslove, reject) => {
+        let d = 2;
+        setTimeout(() => {
+          if (d == 1) {
+            reslove(1);
+          } else {
+            reject(2);
+          }
+        }, 1000);
+      });
+    },
     // 封装随机数方法
     randomDistance(max, min) {
       var distance = Math.floor(Math.random() * (max - min + 1) + min);
@@ -92,8 +104,9 @@ export default {
       // this.$refs.loginFormRef.resetFields();
       // this.gen = this.kai()
       // this.gen.next()
-      this.add = this.add2()
-      console.log(this.add.next(10))
+      // this.add = this.add2()
+      // console.log(this.add.next(10))
+      let num = 10;switch(num){case num >9 && num<11: console.log(2); break; default: console.log(1)}
     },
     * kai() {
       yield setTimeout(() => {console.log(1); this.gen.next()}, 500);
@@ -109,6 +122,7 @@ export default {
        console.log('two' + y)
        return x + y
     },
+
     login() {
       this.$refs.loginFormRef.validate(valid => {
         if (!valid) return;
@@ -140,6 +154,7 @@ export default {
     //   };
     // }
     // a[2]();
+    var a; if(true) {a=5; function a(){} a=0; console.log(a)}console.log(a)
     console.log("第一次循环主执行栈开始1");
 
     setTimeout(function() {
@@ -169,6 +184,9 @@ export default {
   //生命周期 - 挂载完成（访问DOM元素）
   mounted() {
     this.showLogin = true;
+    this.params().then((res) => {
+       console.log(res)
+    })
   }
 };
 </script>
